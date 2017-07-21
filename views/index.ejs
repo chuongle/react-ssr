@@ -1,0 +1,19 @@
+<!doctype html>
+<html>
+  <head>
+    <%-helmet.title.toString()%>
+    <%-helmet.meta.toString()%>
+  </head>
+  <body>
+    <div id="app"><%-html%></div>
+    <script>
+      // `initialState` should have the shape of the Apollo store
+      // state. Make sure to include only the data though. E.g.:
+      // const initialState = {[client.reduxRootKey]: {
+      //   data: client.store.getState()[client.reduxRootKey].data
+      // }};
+      window.__APOLLO_STATE__ = initialState;
+    </script>
+    <script src="/client.bundle.js"></script>
+  </body>
+</html>
