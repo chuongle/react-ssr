@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { Helmet } from 'react-helmet';
 import Article from './Article';
-import { gql, graphql } from 'react-apollo';
+import { graphql } from 'react-apollo';
+import ARTICLES_QUERY from '../graphql/articles';
 
 class Articles extends Component {
+
   renderArticles() {
     return this.props.data.nodeQuery.entities.map((entity) => (
       <Article 
@@ -13,7 +15,14 @@ class Articles extends Component {
   }
 
   render() {
-    console.log('get to aritlces')
+    if (this.props.data.loading) {
+      return (<div>Loading</div>)
+    }
+
+    if (this.props.data.error) {
+      return (<div>An unexpected error occurred</div>)
+    }
+
     return (
       <div className="wrapper">
         <Helmet>
@@ -26,37 +35,4 @@ class Articles extends Component {
   }
 }
 
-// export default ContactList = graphql(ContactListQuery, {
-//   options: (props) => ({
-//     fetchPolicy: 'cache-and-network',
-//     variables: {
-//       filterId: props.contactFilter
-//     },
-//   }),
-// })(ContactListComponent);
-
-// export default Articles;
-export default graphql(gql`query A {
-  nodeQuery(filter: {type: "Article"}) {
-    entities {
-      ...on NodeArticle {
-        title
-        fieldImage {
-          alt
-          url
-          thumbnailImage: derivative(style: thumbnail) {
-            width
-            height
-            url
-          }
-        }
-        body
-        tags:fieldTags {
-          entityId
-          entityLabel
-        }
-      }
-    }
-  }
-}`)(Articles)
-
+export default graphql(ARTICLES_QUERY)(Articles);

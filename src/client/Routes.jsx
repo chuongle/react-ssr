@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { Route, Switch, Link } from 'react-router-dom';
+import { Route, Link } from 'react-router-dom';
 import Home from './components/Home';
-import About  from './components/About';
+import About from './components/About';
 import Contact from './components/Contact';
 import Articles from './components/Articles';
-
 
 class Routes extends Component {
 
@@ -22,7 +21,7 @@ class Routes extends Component {
         <Route path="/contact" component={Contact} />
         <Route path="/articles" component={Articles} />
       </div>
-    )
+    );
   }
 }
 

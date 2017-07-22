@@ -1,14 +1,13 @@
 import express from 'express';
 import path from 'path';
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { StaticRouter } from 'react-router';
 import { Helmet } from 'react-helmet';
-import { ApolloClient, createNetworkInterface, ApolloProvider, renderToStringWithData, getDataFromTree } from 'react-apollo';
-import fetch from 'node-fetch';
+import { ApolloClient, ApolloProvider, renderToStringWithData } from 'react-apollo';
+import fetch from 'isomorphic-fetch';
 import Routes from '../client/Routes';
+import createNetworkInterface from '../helpers/createNetworkInterface';
 
-global.fetch = fetch;
 const app = express();
 
 app.use(express.static('public'));
@@ -18,25 +17,13 @@ app.set('views', path.resolve(__dirname, '../../views'));
 
 app.get('*', (req, res) => {
   const context = {};
-  
-  // const html = renderToString(
-  //   <StaticRouter location={req.url} context={context}>
-  //     <Routes />
-  //   </StaticRouter>);
-  // const helmet = Helmet.renderStatic();
-
   // context.url will contain the URL to redirect to if a <Redirect> was used
   if (context.url) {
     return res.redirect(302, context.url);
   }
-
   const client = new ApolloClient({
-    networkInterface: createNetworkInterface({
-      uri: 'http://headless.docker.localhost/graphql',
-      opts: {
-        credentials: 'same-origin',
-      },
-    }),
+    ssr: true,
+    networkInterface: createNetworkInterface,
   });
 
   const component = (
@@ -47,17 +34,13 @@ app.get('*', (req, res) => {
     </ApolloProvider>
   );
 
-  renderToStringWithData(component).then((html) => {
-    // const state = client.store.getState().apollo.data;
-  //   // TODO manage 404
-    const status = 200; // or 404 is specific condition is met
-    return res.status(status).render('index', { html });
+  return renderToStringWithData(component).then((html) => {
+    const status = 200;
+    const helmet = Helmet.renderStatic();
+    return res.status(status).render('index', { html, helmet });
   }).catch((error) => {
     console.error(error);
   });
-
-  // const status = 200; // or 404 is specific condition is met
-  // return res.status(status).render('index', { html, helmet });
 });
 
 const port = process.env.PORT || 3000;

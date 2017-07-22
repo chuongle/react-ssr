@@ -11,7 +11,7 @@ class Contact extends Component {
         </Helmet>
         <h1>Contact Page</h1>
       </div>
-    )
+    );
   }
 }
 

@@ -11,7 +11,7 @@ class Home extends Component {
         </Helmet>
         <h1>Home Page</h1>
       </div>
-    )
+    );
   }
 }
 
